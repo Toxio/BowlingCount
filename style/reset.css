@@ -1,0 +1,27 @@
+/*_____Reset+_____*/
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, address, q, small, strong,b, center, dl, dt, dd, ol, ul, li, form, label, legend, article, aside, canvas, figure, footer, header, hgroup, menu, nav, section, audio, video{
+margin: 0;
+padding: 0;
+font-size: 100%;
+}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section{display: block;}
+.top_menu li, .bot_menu li{
+position:relative;
+padding:0;
+list-style:none;
+}
+.bot_menu li{
+display: inline;
+}
+a{
+outline:none;
+color: #2781c4;
+text-decoration: none;
+}
+a:hover{color: #2781c4;}
+a img{border:none;}
+.clear{clear:both;}
+p{margin: 0 0 10px 0;}
+html,body{height:100%;margin: 0;}
+* html .wrapper{height:100%;}
+/*____end_Reset+_____*/

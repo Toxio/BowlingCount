@@ -1,0 +1,102 @@
+body {
+  font-size: 16px;
+  font-family: Arial;
+  line-height: 1.5em;
+}
+
+.conainer{
+    padding-left: 2em; 
+}
+
+h2.player {
+  margin: 1em 0 0.25em 0;
+}
+
+h2.player.winner {
+  color: green;
+}
+
+ul.frames {
+  list-style-type: none;
+  margin: 0; 
+  padding: 0;
+}
+
+li.frame {
+  display: inline-block;
+  border: solid 1px gray;
+  width: 6em;
+  margin: 0.2em; /*у первого блока чуть больше отступ */
+  padding: 0.5em;
+  border-collapse: collapse;
+  float: left;
+  background: #efefef;
+}
+
+li.frame.current {
+  background: #FFFF99;
+}
+
+ul.rolls {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+li.roll {
+  display: inline-block;
+  width: 30%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+div.score {
+  width: 100%;
+  text-align: center;
+  border: solid 1px gray;
+}
+
+div.enter_score {
+  text-align: center;
+}
+
+div.enter_score input {
+  border: solid 1px gray;
+  outline: none;
+  padding: 1em;
+  width: 7em;
+  text-align: center;
+  font-size: 1em;
+}
+
+.buttoms {
+  margin: 1em 1em 0 0;
+  width: 100%;
+  text-align: center;  
+}
+
+.buttoms > div{
+   display: inline-block; 
+   padding-right: 1.5em;
+}
+
+#test, #newGame {  
+  top: 1em;
+  right: 1em;
+  padding: 1em;
+  font-size: 1em;
+  border: solid 1px gray;
+  background: #efefef;
+  cursor: pointer;
+}
+
+.image{
+    height: 100%; 
+    width: 100%; 
+    position:absolute;
+    background: url('images/bowling.JPG') fixed center; 
+    opacity: 0.5;
+    z-index: -1;
+    background-size: 100% 100%;
+}
