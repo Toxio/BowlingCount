@@ -12,10 +12,6 @@ h2.player {
   margin: 1em 0 0.25em 0;
 }
 
-h2.player.winner {
-  color: green;
-}
-
 ul.frames {
   list-style-type: none;
   margin: 0; 
@@ -26,16 +22,13 @@ li.frame {
   display: inline-block;
   border: solid 1px gray;
   width: 6em;
-  margin: 0.2em; /*у первого блока чуть больше отступ */
+  margin: 0.2em; 
   padding: 0.5em;
   border-collapse: collapse;
   float: left;
   background: #efefef;
 }
 
-li.frame.current {
-  background: #FFFF99;
-}
 
 ul.rolls {
   list-style-type: none;
