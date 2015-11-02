@@ -273,7 +273,9 @@ function startNewGame(){
         storage = new Array();
       }  
       storage.push(scoreKeeper.totalScore);
-      storage.sort();
+      storage.sort(function(a, b) {
+        return a - b;
+      });
       window.localStorage.setItem("stor", JSON.stringify(storage));
 
       //refresh
