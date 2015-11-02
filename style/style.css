@@ -2,20 +2,25 @@ body {
   font-size: 16px;
   font-family: Arial;
   line-height: 1.5em;
+  margin: 0;
+}
+
+h3{
+  margin-top: 0;
 }
 
 .container{
     padding-left: 2em; 
 }
 
-h2.player {
+h2.totalScore {
   margin: 1em 0 0.25em 0;
 }
 
 ul.frames {
   list-style-type: none;
   margin: 0; 
-  padding: 0;
+  padding: 0;  
 }
 
 li.frame {
@@ -61,17 +66,22 @@ div.enter_score input {
   width: 7em;
   text-align: center;
   font-size: 1em;
+  margin-right: 35px;
+}
+
+.clear{
+  clear:both;
 }
 
 .buttoms {
-  margin: 1em 1em 0 0;
+  margin: 15px 15px 0 -20px;
   width: 100%;
   text-align: center;  
 }
 
 .buttoms > div{
    display: inline-block; 
-   padding-right: 1.5em;
+   padding-right: 4px;
 }
 
 #test, #newGame {  
@@ -82,6 +92,7 @@ div.enter_score input {
   border: solid 1px gray;
   background: #efefef;
   cursor: pointer;
+  width: 115px;
 }
 
 .image{

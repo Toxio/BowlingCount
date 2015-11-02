@@ -1,216 +1,300 @@
- $(document).ready(function() { 
-    var points, total = []; 
+$( document ).ready(function() {
 
-  function initPointsObject(){
-    points = {
-      frameRolls: 0,
-      frameNum: 0,
-      frameSum: 0,
-      strike: false,
-      spare: false,
-      arrSumField: [],
-      endGame: false,
-      extraPoint: false,
-      score: 0
-  };}
+ 
+  var user = "Test";
+  $('.totalScore').text("Total ( )");
 
-  var user = prompt("Enter the name of the player");
-  //var user = "Test";
-  $('.player').text(user);
-
-  //create user fields
+ //create user fields
   createUserFields();
 
-  function createUserFields(){
-    initPointsObject();
+  function createUserFields(){    
     for(var i=1; i < 10; i++){    
-      $(".frame").first().clone().appendTo(".frames");              
-      }
+      $(".frame").first().clone().appendTo(".frames"); 
+      //last frame hav 3 rolls
+      if (i == 9){
+        var lastFrame = $($(".frame")[i]).find('.rolls');
+        $(".roll").eq(0).clone().appendTo(lastFrame);     
+      }             
+    }
   }
 
+ // scoreKeeper.resetGame();
   //input points
   $("#enter_score").on("keypress change", function(e){
-   //check end of the game
-    var point = Number(this.value);
-
-    if (points.endGame){
-      var newGame = confirm('This is the end of game, yor total score = ' + points.score + " Do you want to start а new game?");
-      if(newGame){
-        startNewGame();
-      }                     
-    }                
-    // check value
-    if ( (point < 0 || point > 10)|| ((points.frameSum + point > 10) && total.length < 10) ) {
-    // reset value
-      alert('You have entered the wrong data. Entered points should be in the range of 0-'+  + (10 - points.frameSum));
-      e.target.value = '';
-    return false;
-    }            
-    // check for Enter key
-    if (e.keyCode === 13) {
-      e.target.value = '';   
-      prepearForm(point);    
-     }
-    })
-
-
-  //fill user form
-  function prepearForm(point){      
-      //change frame
-      if( points.frameRolls == 2){
-        points.frameNum ++;
-        points.frameRolls = 0;
-      }        
-      
-
-      var currentFrame = $('.frame')[points.frameNum];   
-      //take current frame    
-      points.score += point;
-      checkStrikeSpare(point);
-      
-      //check for strike or spare
-      var mutePoint = changePoint(point);
-      //input date in frame
-      fillForm(point,currentFrame,mutePoint);
-
-      checkEnd(point); 
-      
-      //need for cheking second point
-      if(points.frameRolls == 0){
-          points.frameSum +=point ;
-      } else {
-         points.arrSumField.push(points.frameSum + point); 
-         points.frameSum = 0 ; 
-      }   
-      points.frameRolls ++;
-      points.totalRolls ++;
-
-      //save point
-      if(points.strike){
-            total.push({1: point});
-      } else {
-          if(points.frameRolls == 1) {
-              total.push({1: point, 2: 0});
-          } else {
-              total[total.length -1][2] = point; 
-          }  
-      }
-         
-  }
-
-  function checkStrikeSpare(point){      
-      //change previous score
-      if(points.frameNum != 0){
-          var previousFrame = $('.frame')[points.frameNum -1]
-          var localScore = points.arrSumField[points.frameNum -1];
-          if(points.strike){
-              $(previousFrame).find('.score').html(localScore + point);
-              points.arrSumField[points.frameNum -1] = localScore + point;
-              points.score += point;
-              points.spare = true;
-              points.strike = false;
-          } else if(points.spare) {
-            $(previousFrame).find('.score').html(localScore + point);
-              points.score += point;
-              points.spare = false; 
-          }
-      }
-  }
-
-  function fillForm(point,currentFrame,mutePoint){
-   //input point in frame
-      $('.player').text(user+" (" + points.score + ")");
-      $(currentFrame).find('.score').html(points.frameSum + point);
-      rolls = $(currentFrame).find('.roll');
-      //correckt output for strike
-      if(point ==10 && total.length < 9) {
-        rolls.eq(0).html(changePoint(mutePoint))
-      } else {
-        rolls.eq(points.frameRolls).html(changePoint(mutePoint))
-      }
-  }
-
-  function changePoint(point){
-      var mutePoint = point;
-      //check for strike
-      if (point == 10) {
-          mutePoint = "X";
-          points.strike = true;
-          if (total.length < 9){
-            points.frameRolls ++;
-            points.frameSum = 0 ;
-            points.totalRolls ++;
-            console.log(total);
-          }   
-       } // check for spare 
-       else if(points.frameSum + point == 10){
-        mutePoint = "/";
-          points.spare = true;
-       } else if(point == 0){
-        mutePoint = "-";
-       }    
-      return mutePoint;
-  }
-
-  function checkEnd(point){
-    if (total.length == 10 && points.frameRolls == 1 ){ 
-        points.endGame = true;
-    }        
-  }
-
-  function startNewGame(){  
-    //save score before new game
-    var storage = window.localStorage.getItem("stor");
-    if(storage) {
-      storage = JSON.parse(storage);
-    } else {
-      storage = new Array();
-    }  
-    storage.push(points.score);
-    storage.sort();
-    window.localStorage.setItem("stor", JSON.stringify(storage));
-
-    //refresh
-    $('.player').text(user);
-    total = [];
-    $(".roll").html('');
-    $(".score").html('&nbsp');
-    initPointsObject();
-  }
-
-  //press button test
-  $("#test").on("click",runTest);
-  //press button newGame
-  $("#newGame").on("click",startNewGame);
-
-  function runTest(){
-    if(points.score > 0){
-      startNewGame();
-    }    
-    var min = 0;
-    var max = 10;
-    for(var i = 0; i < 21 ; i++){
-      max = 10 - points.frameSum;        
-      var n = Math.floor(Math.random() * (max - min + 1)) + min;
-      if(n == 10) i++; 
-            
-      prepearForm(n);        
-    }    
-  }
+    var score = Number(this.value);
   
-  //show result of game
-    $("input[name=count]").on("click change", function(e){
-      var storage = window.localStorage.getItem("stor"), text;
-      if(storage){
-        storage = JSON.parse(storage);
-        if(storage.length < this.value) text = ' - ' + storage.join(', ');
-        else{
-          text = ' - ' + storage.splice(storage.length - this.value,storage.length).join(', ');
-        }
+    // check value
+    if (score < 0 || score > 10){
+      alert("You have entered the wrong data. Entered points should be in the range of 0-10");
+      e.target.value = '';
+      return false;
+    }  
+    //check max second score
+    var arr = scoreKeeper.scoreArr;
+    var arrLastEl = arr[arr.length -1];
+    var maxScore = 10 - arr[arr.length -1]
+    if (scoreKeeper.currentFrameRoll == 2) {
+      if(score > maxScore){
+        alert("You have entered the wrong data. Second points should be in the range of 0-" + maxScore);
+        e.target.value = '';
+        return false;
       }
-      else text = ' Not found saved games';
+    }
 
-      $('span#best').html(text);
-    });
+    // check for Enter key
+    if(e.which == 13) {
+      e.target.value = '';  
+      scoreKeeper.addScore(score);
+    }
+  });
 
+});
+
+var TOTAL_FRAMES = 10; TOTAL_ROLLS =2;
+
+var scoreKeeper = {
+  data: {},
+  scoreArr: [],
+  currentFrame: 1,
+  currentFrameRoll: 1,
+  currentRoll: -1,
+  gameCompleted: false,
+  isExtraFrame: false,
+  extraFrameRollCount: 0,
+  totalScore: 0,
+
+  // resets game
+  resetGame: function() {
+    this.data = {};
+    this.scoreArr = [];
+    this.currentFrame = 1;
+    this.currentFrameRoll = 1;
+    this.currentRoll = -1;
+    this.gameCompleted = false;
+    this.isExtraFrame = false;
+    this.extraFrameRollCount = 0;
+    this.totalScore = 0;
+  },
+  // adds score from input
+  addScore: function(score) {
+    if(this.gameCompleted) {
+
+      if(this.extraFrameRollCount === 0) {
+        startNewGame();
+        return;
+      } else {
+        console.log('Ended on stike or spare, continue...');
+        this.currentFrame ++;
+        this.isExtraFrame = true;
+        this.extraFrameRollCount--;
+      }
+    }     
+
+    isFinalFrame = false;
+    this.currentRoll++;
+
+    if (score == 10)
+
+        if(this.isExtraFrame ) {
+          // extra frame, keep adding score for bonus points
+          this.scoreArr.push(10); 
+        } else {
+          // this is a strike
+          this.data[this.currentFrame] = {strike: true, score: 10, spare: false, roll: this.currentRoll};
+          this.scoreArr.push(10);
+          if(this.currentFrame < TOTAL_FRAMES) {
+            this.currentFrame++;
+          } else {
+            isFinalFrame = true;
+            this.extraFrameRollCount = 2;
+          }
+          this.currentFrameRoll = 1;         
+    } else {
+        if(!this.isExtraFrame ) {
+          if(this.data[this.currentFrame]) {
+            this.data[this.currentFrame].score += parseInt(score);
+            if (this.data[this.currentFrame].score == 10) {
+              // both rolls = 10, this is a spare
+              this.data[this.currentFrame].spare = true;
+              this.data[this.currentFrame].roll = this.currentRoll;
+            }
+          }
+          else {
+            this.data[this.currentFrame] = {strike: false, score: parseInt(score), spare: false, roll: this.currentRoll};
+          }
+         
+          if(this.currentFrameRoll  % TOTAL_ROLLS === 0) {
+            if(this.currentFrame < TOTAL_FRAMES) {
+              this.currentFrame++;
+            } else {
+              isFinalFrame = true;
+            }
+            this.currentFrameRoll = 1;
+            isFrameComplete = true;
+          } else {
+            this.currentFrameRoll++;
+          }
+        } 
+        //spare in the end
+         if(isFinalFrame && this.currentFrameRoll == 1){
+            var arr = scoreKeeper.scoreArr;
+            var arrLastEl = arr[arr.length -1];
+            if(arrLastEl !=10 && arrLastEl + score == 10 ){
+              this.extraFrameRollCount = 1;              
+            }
+          } 
+
+        this.scoreArr.push(parseInt(score));
+    }
+
+    this.getAllScores();
+
+    if(isFinalFrame) {
+      this.gameCompleted = true;      
+    }
+  },
+
+ 
+  getAllScores: function() { 
+    this.totalScore = 0;
+    for (var x =1; x<= TOTAL_FRAMES; x++) {
+      if(this.data[x]) {
+        var frame = this.data[x];
+        if(frame.strike) {
+          var bonusRolls = this.scoreArr.slice(frame.roll+1, frame.roll+3);
+          var addtlPnts = addRolls(bonusRolls);
+          frame.score = 10 + addtlPnts;
+
+        } else if (frame.spare) {
+          var bonusRolls = this.scoreArr.slice(frame.roll+1, frame.roll+2);
+          var addtlPnts = addRolls(bonusRolls);
+          frame.score = 10 + addtlPnts;
+        }
+        this.totalScore += frame.score;
+        fillForm (x,this,frame);       
+      }
+    }
+   
+    if(this.gameCompleted) {
+      if(this.extraFrameRollCount === 0) {
+        startNewGame();
+      return;
+      }
+    }     
+  }
+
+}
+
+function fillForm(x,scoreKeeper,frame){
+   
+    var arr = scoreKeeper.scoreArr;
+    var arrLastEl = arr[arr.length -1];
+    if (arrLastEl == 0) arrLastEl = "-";
+
+    $('.totalScore').text("Total (" + scoreKeeper.totalScore + ")");
+
+    var curFrame = $('.frame')[x-1];       
+    $(curFrame).find('.score').html(frame.score);
+    rolls = $(curFrame).find('.roll');
+    //input poins in current frame
+    if(scoreKeeper.currentFrameRoll == 2 && rolls[0].innerHTML == ""){
+        rolls.eq(0).html(arrLastEl);
+        if(arrLastEl == 10){
+          rolls.eq(0).html(" ");           
+          rolls.eq(1).html("X");
+        }       
+    } else if(rolls[1].innerHTML == "") {        
+      //if strike or spare
+    if(arrLastEl == 10){
+          rolls.eq(0).html(" "); 
+          arrLastEl = "X";
+       } else if (frame.spare) {
+          arrLastEl = "/";
+      } 
+      rolls.eq(1).html(arrLastEl);               
+    } 
+    //for last extra frame
+    if (scoreKeeper.isExtraFrame){        
+        var lastFrame = $('.frame')[9];       
+        var lastRolls = $(lastFrame).find('.roll');
+        var preLastRolls = arr[arr.length -2];
+        if (arrLastEl == 10) arrLastEl = "X";
+        if (preLastRolls == 10) preLastRolls = "X";
+
+        if (scoreKeeper.extraFrameRollCount == 1) {
+          lastRolls.eq(0).html(preLastRolls); 
+          lastRolls.eq(1).html(arrLastEl);
+        } else lastRolls.eq(2).html(arrLastEl);;    
+      }     
+}
+
+// adds roll values from array and returns sum
+function addRolls(arr) {
+  if(arr.length === 0) {
+    return 0;
+  }
+  var total = arr.reduce(function(a, b) {
+      return a + b;
+  });
+  return total;
+}
+
+//press button test
+$("#test").on("click",runTest);
+//press button newGame
+$("#newGame").on("click",startNewGame);
+
+function runTest(){
+  if(scoreKeeper.totalScore > 0){
+    startNewGame();
+  }    
+  var min = 0;
+  var max ;
+  var arr = scoreKeeper.scoreArr;
+  for(var i = 1; i < 21 ; i++){
+    //second points shoud be less than 10 - previous
+    if(i%2 == 0){
+      max = 10 - arr[arr.length -1];   
+    } else max = 10;
+          
+    var n = Math.floor(Math.random() * (max - min + 1)) + min;
+    scoreKeeper.addScore(n);        
+  }  
+}
+
+function startNewGame(){ 
+    var newGame = confirm('This is the end of game, yor total score = ' + scoreKeeper.totalScore + " Do you want to start а new game?");
+    if(newGame) {
+      //savnewGamee score before new game
+      var storage = window.localStorage.getItem("stor");
+      if(storage) {
+        storage = JSON.parse(storage);
+      } else {
+        storage = new Array();
+      }  
+      storage.push(scoreKeeper.totalScore);
+      storage.sort();
+      window.localStorage.setItem("stor", JSON.stringify(storage));
+
+      //refresh
+      scoreKeeper.resetGame();  
+      $('.totalScore').text("Total ( )");
+      $(".roll").html('');
+      $(".score").html('&nbsp');
+    }
+}
+
+//show result of game
+$("input[name=count]").on("click change", function(e){
+    var storage = window.localStorage.getItem("stor"), text;
+    if(storage){
+      storage = JSON.parse(storage);
+      if(storage.length < this.value) text = ' - ' + storage.join(', ');
+      else{
+        text = ' - ' + storage.splice(storage.length - this.value,storage.length).join(', ');
+      }
+    }
+    else text = ' Not found saved games';
+
+    $('span#best').html(text);
 });
